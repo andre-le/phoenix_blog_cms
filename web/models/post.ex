@@ -2,6 +2,7 @@ defmodule PhoenixBlog.Post do
   use PhoenixBlog.Web, :model
 
   schema "posts" do
+    belongs_to :user, PhoenixBlog.User
     field :tittle, :string
     field :body, :string
 
