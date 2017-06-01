@@ -3,7 +3,7 @@
 <ul>
   <li>
     <strong>Title:</strong>
-    <%= @post.title %>
+    <%= @post.tittle %>
   </li>
   <li>
     <strong>Body:</strong>

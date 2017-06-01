@@ -11,7 +11,7 @@
   <tbody>
     <%= for post <- @posts do %>
       <tr>
-        <td><%= post.title %></td>
+        <td><%= post.tittle %></td>
         <td><%= post.body %></td>
         <td class="text-right">
           <%= link "Show", to: user_post_path(@conn, :show, @user, post), class: "btn btn-default btn-xs" %>
