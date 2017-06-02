@@ -3,6 +3,7 @@ defmodule PhoenixBlog.User do
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
   schema "users" do
+    belongs_to :role, PhoenixBlog.Role
     has_many :posts, PhoenixBlog.Post
     field :username, :string
     field :email, :string
@@ -20,8 +21,8 @@ defmodule PhoenixBlog.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:username, :email, :password, :password_confirmation])
-    |> validate_required([:username, :email, :password, :password_confirmation])
+    |> cast(params, [:username, :email, :password, :password_confirmation, :role_id])
+    |> validate_required([:username, :email, :password, :password_confirmation, :role_id])
     |> hash_password
   end
 
