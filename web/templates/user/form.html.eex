@@ -30,6 +30,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :role_id, "Role", class: "control-label" %>
+    <%= select f, :role_id, roles_for_select(@roles), class: "form-control" %>
+    <%= error_tag f, :role_id %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
