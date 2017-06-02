@@ -5,6 +5,7 @@ defmodule PhoenixBlog.PostController do
   alias PhoenixBlog.Post
 
   plug :assign_user
+  plug :authorize_user when action in [:new, :create, :update, :edit, :delete]
 
   def index(conn, _params) do
     posts = Repo.all(assoc(conn.assigns[:user], :posts))
@@ -85,4 +86,17 @@ defmodule PhoenixBlog.PostController do
     |> redirect(to: page_path(conn, :index))
     |> halt
   end
+
+  defp authorize_user(conn, _opts) do
+    user = get_session(conn, :current_user)
+    if user && Integer.to_string(user.id) == conn.params["user_id"] do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You are not authorized to modify!")
+      |> redirect(to: page_path(conn, :index))
+      |> halt()
+    end
+  end
+
 end

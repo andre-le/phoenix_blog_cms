@@ -2,16 +2,31 @@ defmodule PhoenixBlog.PostControllerTest do
   use PhoenixBlog.ConnCase
 
   alias PhoenixBlog.Post
+
+  alias PhoenixBlog.User
+  setup do
+    {:ok, user} = create_user
+    conn = build_conn()
+    |> login_user(user)
+    {:ok, conn: conn, user: user}
+  end
+  defp create_user do
+    User.changeset(%User{}, %{email: "test@test.com", username: "test", password: "test", password_confirmation: "test"})
+    |> Repo.insert
+  end
+  defp login_user(conn, user) do
+    post conn, session_path(conn, :create), user: %{username: user.username, password: user.password}
+  end
   @valid_attrs %{body: "some content", tittle: "some content"}
   @invalid_attrs %{}
 
-  test "lists all entries on index", %{conn: conn} do
-    conn = get conn, post_path(conn, :index)
+  test "lists all entries on index", %{conn: conn, user: user} do
+    conn = get conn, user_post_path(conn, :index, user)
     assert html_response(conn, 200) =~ "Listing posts"
   end
 
-  test "renders form for new resources", %{conn: conn} do
-    conn = get conn, post_path(conn, :new)
+  test "renders form for new resources", %{conn: conn, user: user} do
+    conn = get conn, user_post_path(conn, :new, user)
     assert html_response(conn, 200) =~ "New post"
   end
 
