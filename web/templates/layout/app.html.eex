@@ -20,6 +20,13 @@
           <strong><%= user.username %></strong>
           <br>
           <%= link "Log out", to: session_path(@conn, :delete, user.id), method: :delete %>
+
+          <%= if user.role_id == 3 do %>
+            <p><%= link "See the list of user", to: user_path(@conn, :index, user)%></p>
+            <p><%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %></p>
+          <% else %>
+            <p><%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %></p>
+          <% end %>
         <% else %>
           <%= link "Log in", to: session_path(@conn, :new) %>
         <% end %>
