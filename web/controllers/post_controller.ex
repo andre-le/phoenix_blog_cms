@@ -100,4 +100,11 @@ defmodule PhoenixBlog.PostController do
     end
   end
 
+#  defp find_draft do
+#    user = get_session(conn, :current_user)
+#    if user && (Integer.to_string(user.id) == conn.params["user_id"] do
+#      posts = Repo.all(assoc(conn.assigns[:user], :posts))
+#    end
+#  end
+
 end

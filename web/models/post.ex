@@ -5,6 +5,7 @@ defmodule PhoenixBlog.Post do
     belongs_to :user, PhoenixBlog.User
     field :tittle, :string
     field :body, :string
+    field :draft, :boolean, default: false
 
     timestamps()
   end
@@ -14,7 +15,7 @@ defmodule PhoenixBlog.Post do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:tittle, :body])
+    |> cast(params, [:tittle, :body, :draft])
     |> validate_required([:tittle, :body])
   end
 end

@@ -18,15 +18,14 @@
         <%= if user = current_user(@conn) do %>
           Logged in as
           <strong><%= user.username %></strong>
+          <%= if user.role_id == 3 do %>
+            <span><%= link "Users", to: user_path(@conn, :index, user)%></span>
+            <span><%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %></span>
+          <% else %>
+            <span><%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %></span>
+          <% end %>
           <br>
           <%= link "Log out", to: session_path(@conn, :delete, user.id), method: :delete %>
-
-          <%= if user.role_id == 3 do %>
-            <p><%= link "See the list of user", to: user_path(@conn, :index, user)%></p>
-            <p><%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %></p>
-          <% else %>
-            <p><%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %></p>
-          <% end %>
         <% else %>
           <%= link "Log in", to: session_path(@conn, :new) %>
         <% end %>
