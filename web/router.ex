@@ -19,6 +19,8 @@ defmodule PhoenixBlog.Router do
     get "/", PageController, :index
     resources "/users", UserController do
       resources "/posts", PostController
+      get "/nondrafts", PostController, :nondraft
+      get "/all", PostController, :all
     end
     resources "/sessions", SessionController, only: [:new, :create, :delete]
   end

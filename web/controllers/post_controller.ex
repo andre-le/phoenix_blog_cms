@@ -6,6 +6,7 @@ defmodule PhoenixBlog.PostController do
 
   plug :assign_user
   plug :authorize_user when action in [:new, :create, :update, :edit, :delete]
+  plug :authorize_draft when action in [:index]
 
   def index(conn, _params) do
     posts = Repo.all(assoc(conn.assigns[:user], :posts))
@@ -69,6 +70,19 @@ defmodule PhoenixBlog.PostController do
     |> redirect(to: user_post_path(conn, :index, conn.assigns[:user]))
   end
 
+  def nondraft(conn, _) do
+    query = from post in assoc(conn.assigns[:user], :posts),
+    where: post.draft == false
+    posts = Repo.all(query)
+    render(conn, "nondrafts.html", posts: posts)
+  end
+
+  def all(conn, _) do
+    query = from post in Post, where: post.draft == false
+    posts = Repo.all(query)
+    render(conn, "nondrafts.html", posts: posts)
+  end
+
   defp assign_user(conn, _opts) do
     case conn.params do
       %{"user_id" => user_id} ->
@@ -100,11 +114,14 @@ defmodule PhoenixBlog.PostController do
     end
   end
 
-#  defp find_draft do
-#    user = get_session(conn, :current_user)
-#    if user && (Integer.to_string(user.id) == conn.params["user_id"] do
-#      posts = Repo.all(assoc(conn.assigns[:user], :posts))
-#    end
-#  end
+  defp authorize_draft(conn, _) do
+    user = get_session(conn, :current_user)
+    if user && Integer.to_string(user.id) != conn.params["user_id"] do
+      conn
+      |> redirect(to: user_post_path(conn, :nondraft, conn.assigns[:user]))
+    else
+      conn
+    end
+  end
 
 end

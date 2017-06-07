@@ -5,8 +5,8 @@
     <tr>
       <th>Title</th>
       <th>Body</th>
-      <th>Draft</th>
       <th>Last Update</th>
+      <th>Author</th>
     </tr>
   </thead>
   <tbody>
@@ -14,12 +14,9 @@
       <tr>
         <td><%= post.tittle %></td>
         <td><%= post.body %></td>
-        <%= if post.draft do %>
-          <td>&#10004;</td>
-        <% else %>
-          <td></td>
-        <% end %>
         <td><%= show_date(post) %></td>
+        <td><%= get_username(post) %></td>
+
         <td class="text-right">
           <%= link "Show", to: user_post_path(@conn, :show, @user, post), class: "btn btn-default btn-xs" %>
           <%= link "Edit", to: user_post_path(@conn, :edit, @user, post), class: "btn btn-default btn-xs" %>
@@ -29,5 +26,3 @@
     <% end %>
   </tbody>
 </table>
-
-<%= link "New post", to: user_post_path(@conn, :new, @user) %>
