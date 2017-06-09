@@ -12,11 +12,6 @@
     <%= @user.email %>
   </li>
 
-  <li>
-    <strong>Password digest:</strong>
-    <%= @user.password_digest %>
-  </li>
-
 </ul>
 
 <%= link "Edit", to: user_path(@conn, :edit, @user) %>

@@ -15,12 +15,12 @@
         <td><%= post.tittle %></td>
         <td><%= post.body %></td>
         <td><%= show_date(post) %></td>
-        <td><%= get_username(post) %></td>
+        <td><%= get_user(post).username %></td>
 
         <td class="text-right">
-          <%= link "Show", to: user_post_path(@conn, :show, @user, post), class: "btn btn-default btn-xs" %>
-          <%= link "Edit", to: user_post_path(@conn, :edit, @user, post), class: "btn btn-default btn-xs" %>
-          <%= link "Delete", to: user_post_path(@conn, :delete, @user, post), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+          <%= link "Show", to: user_post_path(@conn, :show, get_user(post), post), class: "btn btn-default btn-xs" %>
+          <%= link "Edit", to: user_post_path(@conn, :edit, get_user(post), post), class: "btn btn-default btn-xs" %>
+          <%= link "Delete", to: user_post_path(@conn, :delete, get_user(post), post), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
         </td>
       </tr>
     <% end %>

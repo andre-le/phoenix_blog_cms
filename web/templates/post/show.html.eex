@@ -12,4 +12,8 @@
 </ul>
 
 <%= link "Edit", to: user_post_path(@conn, :edit, @user, @post) %>
-<%= link "Back", to: user_post_path(@conn, :index, @user) %>
+
+<%= render "comments.html", conn: @conn, comment: @comment %>
+
+<%= render "comment_form.html", post: @post, changeset: @changeset,
+action: user_post_post_path(@conn, :add_comment, @user, @post) %>

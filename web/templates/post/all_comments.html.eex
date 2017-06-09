@@ -1,0 +1,3 @@
+<%= for comment <- @comments do %>
+  <td><%= comment.content %></td>
+<% end %>

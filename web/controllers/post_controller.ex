@@ -3,7 +3,9 @@ defmodule PhoenixBlog.PostController do
   use PhoenixBlog.Web, :controller
 
   alias PhoenixBlog.Post
+  alias PhoenixBlog.Comment
 
+  plug :scrub_params, "comment" when action in [:add_comment]
   plug :assign_user
   plug :authorize_user when action in [:new, :create, :update, :edit, :delete]
   plug :authorize_draft when action in [:index]
@@ -38,7 +40,13 @@ defmodule PhoenixBlog.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
-    render(conn, "show.html", post: post)
+    changeset = post
+    |> build_assoc(:comments)
+    |> PhoenixBlog.Comment.changeset()
+    #Get all the comments in the post
+    query = from comment in Comment, where: comment.post_id == ^id
+    comments = Repo.all(query)
+    render(conn, "show.html", post: post, comment: comments, changeset: changeset)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -124,4 +132,23 @@ defmodule PhoenixBlog.PostController do
     end
   end
 
+  def add_comment(conn, %{"comment" => comment_params, "post_id" => post_id}) do
+    post      = Repo.get!(Post, post_id) |> Repo.preload([:user, :comments])
+    changeset = post
+      |> build_assoc(:comments)
+      |> Comment.changeset(comment_params)
+    case Repo.insert(changeset) do
+      {:ok, _comment} ->
+        conn
+        |> put_flash(:info, "Comment created successfully!")
+        |> redirect(to: user_post_path(conn, :show, post.user, post))
+      {:error, changeset} ->
+        render(conn, "show.html", post: post, changeset: changeset)
+    end
+  end
+
+  def get_current_username(conn) do
+    user = get_session(conn, :current_user)
+    user.username
+  end
 end

@@ -3,6 +3,7 @@ defmodule PhoenixBlog.Post do
 
   schema "posts" do
     belongs_to :user, PhoenixBlog.User
+    has_many :comments, PhoenixBlog.Comment
     field :tittle, :string
     field :body, :string
     field :draft, :boolean, default: false
