@@ -1,12 +1,17 @@
 <h2>Listing users</h2>
 
+<%= search_form(@conn, @rummage, [fields:
+[
+  username: %{label: "Search username", search_type: "ilike"}
+], button_class: "btn",
+]) %>
+
 <table class="table">
   <thead>
     <tr>
-      <th>Username</th>
+      <th><%= sort_link @conn, @rummage, [field: :username, ci: true] %></th>
       <th>Email</th>
       <th>Role</th>
-
       <th></th>
     </tr>
   </thead>
@@ -32,3 +37,5 @@
   </tbody>
 </table>
 <%= link "New user", to: user_path(@conn, :new) %>
+
+<%= pagination_link(@conn, @rummage) %>

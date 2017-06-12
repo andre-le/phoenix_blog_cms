@@ -1,5 +1,5 @@
 <h2>Show post</h2>
-
+<%= link "View", to: user_post_post_path(@conn, :page, @user, @post) %>
 <ul>
   <li>
     <strong>Title:</strong>

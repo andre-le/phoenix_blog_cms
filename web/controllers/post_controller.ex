@@ -1,6 +1,7 @@
 defmodule PhoenixBlog.PostController do
 
   use PhoenixBlog.Web, :controller
+  #use Rummage.Phoenix.Controller
 
   alias PhoenixBlog.Post
   alias PhoenixBlog.Comment
@@ -49,6 +50,12 @@ defmodule PhoenixBlog.PostController do
     render(conn, "show.html", post: post, comment: comments, changeset: changeset)
   end
 
+  def page(conn, %{"post_id" => id}) do
+    post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
+    changeset = Post.changeset(post)
+    render(conn, "page.html", post: post, changeset: changeset)
+  end
+
   def edit(conn, %{"id" => id}) do
     post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
     changeset = Post.changeset(post)
@@ -85,10 +92,13 @@ defmodule PhoenixBlog.PostController do
     render(conn, "nondrafts.html", posts: posts)
   end
 
-  def all(conn, _) do
-    query = from post in Post, where: post.draft == false
+  def all(conn, params) do
+    all_posts = from post in Post, where: post.draft == false
+    {query, rummage} = all_posts
+    |> Post.rummage(params["rummage"])
     posts = Repo.all(query)
-    render(conn, "nondrafts.html", posts: posts)
+
+    render(conn, "nondrafts.html", posts: posts, rummage: rummage)
   end
 
   defp assign_user(conn, _opts) do

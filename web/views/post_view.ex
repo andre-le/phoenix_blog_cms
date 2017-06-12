@@ -1,5 +1,7 @@
 defmodule PhoenixBlog.PostView do
   use PhoenixBlog.Web, :view
+  use Rummage.Phoenix.View
+
   alias PhoenixBlog.Repo
   alias PhoenixBlog.User
   alias PhoenixBlog.PostController

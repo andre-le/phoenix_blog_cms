@@ -41,3 +41,8 @@ config :phoenix_blog, PhoenixBlog.Repo,
   database: "phoenix_blog_dev",
   hostname: "localhost",
   pool_size: 10
+
+  # Configure Rummage
+  config :rummage_ecto, Rummage.Ecto,
+    default_repo: PhoenixBlog.Repo,
+    default_per_page: 5

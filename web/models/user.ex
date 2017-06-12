@@ -1,5 +1,6 @@
 defmodule PhoenixBlog.User do
   use PhoenixBlog.Web, :model
+  use Rummage.Ecto
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
   schema "users" do

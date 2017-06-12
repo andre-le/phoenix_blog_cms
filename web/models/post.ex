@@ -1,5 +1,6 @@
 defmodule PhoenixBlog.Post do
   use PhoenixBlog.Web, :model
+  use Rummage.Ecto
 
   schema "posts" do
     belongs_to :user, PhoenixBlog.User

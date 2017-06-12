@@ -1,15 +1,19 @@
 defmodule PhoenixBlog.UserController do
   use PhoenixBlog.Web, :controller
-
+  use Rummage.Phoenix.Controller
+  
   alias PhoenixBlog.User
   alias PhoenixBlog.Role
 
   plug :authorize_admin when action in [:new, :create]
   plug :authorize_user when action in [:edit, :update, :delete]
 
-  def index(conn, _params) do
-    users = Repo.all(User)
-    render(conn, "index.html", users: users)
+  def index(conn, params) do
+    {query, rummage} = User
+    |> User.rummage(params["rummage"])
+    users = Repo.all(query)
+
+    render(conn, "index.html", users: users, rummage: rummage)
   end
 
   def new(conn, _params) do
