@@ -21,4 +21,10 @@ defmodule PhoenixBlog.PostView do
     PostController.get_current_username(conn)
   end
 
+  def markdown(body) do
+    body
+    |> Earmark.to_html
+    |> raw
+  end
+
 end

@@ -1,1 +1,15 @@
-<h1>x</h1>
+<style>
+  h1{
+    font-family: Georgia;
+    color: #FF1493;
+    font-size: 52px;
+  }
+  p{
+    font-size: 20px;
+  }
+</style>
+
+<html>
+  <h1 class='text-center'><%= @post.tittle %></h1>
+  <p><%= markdown(@post.body) %></p>
+</html>
