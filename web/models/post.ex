@@ -5,6 +5,7 @@ defmodule PhoenixBlog.Post do
   schema "posts" do
     belongs_to :user, PhoenixBlog.User
     has_many :comments, PhoenixBlog.Comment
+    field :image, :string
     field :tittle, :string
     field :body, :string
     field :draft, :boolean, default: false
@@ -18,7 +19,7 @@ defmodule PhoenixBlog.Post do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:tittle, :body, :draft])
+    |> cast(params, [:tittle, :body, :draft, :image])
     |> validate_required([:tittle, :body])
     |> strip_unsafe_body(params)
   end

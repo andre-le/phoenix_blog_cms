@@ -9,6 +9,10 @@
     <strong>Body:</strong>
     <%= markdown(@post.body) %>
   </li>
+  <li>
+    <strong>Cover Photo</strong>
+    <img src="<%= @post.image %>">
+  </li>
 </ul>
 
 <%= link "Edit", to: user_post_path(@conn, :edit, @user, @post) %>

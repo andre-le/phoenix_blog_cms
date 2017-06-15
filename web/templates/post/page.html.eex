@@ -7,9 +7,21 @@
   p{
     font-size: 20px;
   }
+  .head{
+    width: 700px;
+    height: 200px;
+  }
+
+  .head img {
+    height: 100%;
+    width: 100%;
+  }
 </style>
 
 <html>
+  <div class='head text-center'>
+    <img src="<%= @post.image %>">
+  </div>
   <h1 class='text-center'><%= @post.tittle %></h1>
   <p><%= markdown(@post.body) %></p>
 </html>
