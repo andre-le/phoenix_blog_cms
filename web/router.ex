@@ -13,6 +13,17 @@ defmodule PhoenixBlog.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api", PhoenixBlog.Api, as: :api do
+    pipe_through :api
+
+    get "/", PageController, :index
+    resources "/users", UserController, only: [:index, :show] do
+      resources "/posts", PostController, only: [:index, :show]
+      get "/all", PostController, :all
+    end
+    resources "/sessions", SessionController, only: [:new, :create, :delete]
+  end
+
   scope "/", PhoenixBlog do
     pipe_through :browser # Use the default browser stack
 
