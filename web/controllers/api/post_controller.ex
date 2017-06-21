@@ -12,7 +12,7 @@ defmodule PhoenixBlog.Api.PostController do
     json conn, posts
   end
 
-  def show(conn, %{"user_id" => user_id, "id" => id}) do#need fix
+  def show(conn, %{"id" => id}) do#need fix
     post = Repo.get!(Post, id)
     comments = from(comment in Comment, where: comment.post_id == ^id,
     select: comment.content) |> Repo.all
@@ -20,7 +20,7 @@ defmodule PhoenixBlog.Api.PostController do
     json conn, post
   end
 
-  def all(conn, params) do
+  def all(conn, _params) do
     all_posts = from post in Post, where: post.draft == false
     posts = from(post in all_posts,
     select: %{title: post.tittle, body: post.body, draft: post.draft, cover_image: post.image})

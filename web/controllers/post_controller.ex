@@ -77,8 +77,8 @@ defmodule PhoenixBlog.PostController do
 
   def delete(conn, %{"id" => id}) do
     post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
+    query = from cmt in Comment, where: cmt.post_id == ^id
+    Repo.delete_all(query)
     Repo.delete!(post)
     conn
     |> put_flash(:info, "Post deleted successfully.")

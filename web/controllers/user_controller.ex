@@ -1,9 +1,10 @@
 defmodule PhoenixBlog.UserController do
   use PhoenixBlog.Web, :controller
   use Rummage.Phoenix.Controller
-  
+
   alias PhoenixBlog.User
   alias PhoenixBlog.Role
+  alias PhoenixBlog.Post
 
   plug :authorize_admin when action in [:new, :create]
   plug :authorize_user when action in [:edit, :update, :delete]
@@ -65,14 +66,18 @@ defmodule PhoenixBlog.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(user)
-
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
+    query = from(post in Post, where: post.user_id == ^id, select: %{tittle: post.tittle})
+    |> Repo.all
+    if (query == []) do
+      Repo.delete!(user)
+      conn
+      |> put_flash(:info, "User deleted successfully.")
+      |> redirect(to: user_path(conn, :index))
+    else
+      conn
+      |> put_flash(:error, "Canot delete! This user still has posts")
+      |> redirect(to: user_path(conn, :index))
+    end
   end
 
   defp authorize_user(conn, _) do

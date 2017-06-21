@@ -2,7 +2,6 @@ defmodule PhoenixBlog.Api.UserController do
   use PhoenixBlog.Web, :controller
 
   alias PhoenixBlog.User
-  alias PhoenixBlog.Role
 
   def index(conn, _params) do
     users = from(u in User, select: %{username: u.username, email: u.email, role: u.role_id})

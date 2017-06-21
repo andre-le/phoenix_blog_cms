@@ -6,6 +6,7 @@
       <th>Title</th>
       <th>Body</th>
       <th>Draft</th>
+      <th>Published</th>
       <th>Last Update</th>
     </tr>
   </thead>
@@ -15,6 +16,11 @@
         <td><%= post.tittle %></td>
         <td><%= post.body %></td>
         <%= if post.draft do %>
+          <td>&#10004;</td>
+        <% else %>
+          <td></td>
+        <% end %>
+        <%= if post.publish do %>
           <td>&#10004;</td>
         <% else %>
           <td></td>
