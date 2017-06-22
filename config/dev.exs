@@ -45,4 +45,4 @@ config :phoenix_blog, PhoenixBlog.Repo,
   # Configure Rummage
   config :rummage_ecto, Rummage.Ecto,
     default_repo: PhoenixBlog.Repo,
-    default_per_page: 5
+    default_per_page: 10

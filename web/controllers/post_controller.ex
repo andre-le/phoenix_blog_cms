@@ -64,14 +64,21 @@ defmodule PhoenixBlog.PostController do
 
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Repo.get!(assoc(conn.assigns[:user], :posts), id)
+    user = get_session(conn, :current_user)
     changeset = Post.changeset(post, post_params)
-    case Repo.update(changeset) do
-      {:ok, post} ->
-        conn
-        |> put_flash(:info, "Post updated successfully.")
-        |> redirect(to: user_post_path(conn, :show, conn.assigns[:user], post))
-      {:error, changeset} ->
-        render(conn, "edit.html", post: post, changeset: changeset)
+    if (post_params["status"] == "Publish" && user.role_id == 1) do
+      conn
+      |> put_flash(:error, "You are not authorized to publish post")
+      |> redirect(to: user_post_path(conn, :edit, conn.assigns[:user], post))
+    else
+      case Repo.update(changeset) do
+        {:ok, post} ->
+          conn
+          |> put_flash(:info, "Post updated successfully.")
+          |> redirect(to: user_post_path(conn, :show, conn.assigns[:user], post))
+        {:error, changeset} ->
+          render(conn, "edit.html", post: post, changeset: changeset)
+      end
     end
   end
 
@@ -87,13 +94,13 @@ defmodule PhoenixBlog.PostController do
 
   def nondraft(conn, _) do
     query = from post in assoc(conn.assigns[:user], :posts),
-    where: post.draft == false
+    where: post.status != "Draft"
     posts = Repo.all(query)
     render(conn, "nondrafts.html", posts: posts)
   end
 
   def all(conn, params) do
-    all_posts = from post in Post, where: post.draft == false
+    all_posts = from post in Post, where: post.status != "Draft"
     {query, rummage} = all_posts
     |> Post.rummage(params["rummage"])
     posts = Repo.all(query)

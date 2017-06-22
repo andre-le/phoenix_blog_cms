@@ -3,10 +3,9 @@ defmodule PhoenixBlog.PageController do
   alias PhoenixBlog.Post
 
   def index(conn, _params) do
-    x = Repo.all(Post)
-    posts = from(post in Post, where: post.publish == true)
+    posts = from(post in Post, where: post.status == "Publish")
     |> Repo.all
-    render(conn, "index.html", posts: x)
+    render(conn, "index.html", posts: posts)
   end
 
 end

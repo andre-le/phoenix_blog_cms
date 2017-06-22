@@ -8,8 +8,7 @@ defmodule PhoenixBlog.Post do
     field :image, :string
     field :tittle, :string
     field :body, :string
-    field :draft, :boolean, default: false
-    field :publish, :boolean, default: false
+    field :status, :string
 
     timestamps()
   end
@@ -20,7 +19,7 @@ defmodule PhoenixBlog.Post do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:tittle, :body, :draft, :image, :publish])
+    |> cast(params, [:tittle, :body, :image, :status])
     |> validate_required([:tittle, :body])
     |> strip_unsafe_body(params)
   end

@@ -4,9 +4,9 @@
     <tr>
       <th>Title</th>
       <th>Body</th>
+      <th>Status</th>
       <th>Last Update</th>
       <th>Author</th>
-      <th>Published</th>
     </tr>
   </thead>
   <tbody>
@@ -14,16 +14,12 @@
       <tr>
         <td><%= post.tittle %></td>
         <td><%= post.body %></td>
+        <td><%= post.status %></td>
         <td><%= show_date(post) %></td>
         <td><%= get_user(post).username %></td>
-        <%= if post.publish do %>
-          <td>&#10004;</td>
-        <% else %>
-          <td></td>
-        <% end %>
-
         <td class="text-right">
           <%= link "Show", to: user_post_path(@conn, :show, get_user(post), post), class: "btn btn-default btn-xs" %>
+          <%= link "Edit", to: user_post_path(@conn, :edit, get_user(post), post), class: "btn btn-default btn-xs" %>
           <%= link "Delete", to: user_post_path(@conn, :delete, get_user(post), post), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
         </td>
       </tr>

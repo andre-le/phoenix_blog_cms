@@ -5,8 +5,7 @@
     <tr>
       <th>Title</th>
       <th>Body</th>
-      <th>Draft</th>
-      <th>Published</th>
+      <th>Status</th>
       <th>Last Update</th>
     </tr>
   </thead>
@@ -15,16 +14,7 @@
       <tr>
         <td><%= post.tittle %></td>
         <td><%= post.body %></td>
-        <%= if post.draft do %>
-          <td>&#10004;</td>
-        <% else %>
-          <td></td>
-        <% end %>
-        <%= if post.publish do %>
-          <td>&#10004;</td>
-        <% else %>
-          <td></td>
-        <% end %>
+        <td><%= post.status %></td>
         <td><%= show_date(post) %></td>
         <td class="text-right">
           <%= link "Show", to: user_post_path(@conn, :show, @user, post), class: "btn btn-default btn-xs" %>
