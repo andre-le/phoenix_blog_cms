@@ -18,9 +18,10 @@
         <%= if user = current_user(@conn) do %>
           Logged in as
           <strong><%= user.username %></strong>
-          <span><%= link "Users", to: user_path(@conn, :index, user)%></span>
-          <span><%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %></span>
-          <span><%= link "All Posts", to: user_post_path(@conn, :all, user.id) %></span>
+          <%= link "Home", to: page_path(@conn, :index)%>
+          <%= link "Users", to: user_path(@conn, :index, user)%>
+          <%= link "Your Posts", to: user_post_path(@conn, :index, user.id) %>
+          <%= link "All Posts", to: user_post_path(@conn, :all, user.id) %>
 
           <br>
           <%= link "Log out", to: session_path(@conn, :delete, user.id), method: :delete %>
