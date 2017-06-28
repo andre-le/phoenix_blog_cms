@@ -21,6 +21,8 @@ defmodule PhoenixBlog.Router do
       resources "/posts", PostController, only: [:index, :show]
       get "/all", PostController, :all
     end
+    post "/sessions", SessionController, :create
+    put "/sessions", SessionController, :decrypt_jwt
 
   end
 
@@ -29,7 +31,6 @@ defmodule PhoenixBlog.Router do
 
     get "/", PageController, :index
     resources "/users", UserController do
-      patch "/publish", PostController, :publish
       resources "/posts", PostController do
         post "/comment", PostController, :add_comment
         get "/page", PostController, :page

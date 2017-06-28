@@ -9,6 +9,8 @@ defmodule PhoenixBlog.User do
     field :username, :string
     field :email, :string
     field :password_digest, :string
+    field :uid, :string
+    field :provider, :string
 
     timestamps()
 
@@ -22,9 +24,16 @@ defmodule PhoenixBlog.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:username, :email, :password, :password_confirmation, :role_id])
+    |> cast(params, [:username, :email, :password, :password_confirmation, :role_id, :uid, :provider])
     |> validate_required([:username, :email, :password, :password_confirmation, :role_id])
     |> hash_password
+    |> get_provider
+  end
+
+  #apply to user log in with WeFit
+  defp get_provider(changeset) do
+      changeset
+      |> put_change(:provider, "WeFit")
   end
 
   defp hash_password(changeset) do

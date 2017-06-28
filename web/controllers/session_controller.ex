@@ -23,7 +23,7 @@ defmodule PhoenixBlog.SessionController do
   defp sign_in(user, _password, conn) when is_nil(user) do
     failed_login(conn)
   end
-  
+
   defp sign_in(user, password, conn) do
     if checkpw(password, user.password_digest) do
       conn

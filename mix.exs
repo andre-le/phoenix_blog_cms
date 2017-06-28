@@ -41,7 +41,8 @@ defmodule PhoenixBlog.Mixfile do
      {:comeonin, "~> 2.3"},
      {:rummage_ecto, "~> 1.0.0"},
      {:rummage_phoenix, "~> 1.0.0"},
-     {:earmark, "~> 1.0.1"}]
+     {:earmark, "~> 1.0.1"},
+     {:joken, "~> 1.1"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
