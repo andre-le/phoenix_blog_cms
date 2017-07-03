@@ -20,9 +20,10 @@ defmodule PhoenixBlog.Router do
     resources "/users", UserController, only: [:index, :show] do
       resources "/posts", PostController, only: [:index, :show]
       get "/all", PostController, :all
+      get "/nondrafts", PostController, :nondraft
     end
     post "/sessions", SessionController, :create
-    put "/sessions", SessionController, :decrypt_jwt
+    get "/sessions", SessionController, :decrypt_jwt
 
   end
 

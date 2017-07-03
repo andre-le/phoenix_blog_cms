@@ -1,7 +1,7 @@
 defmodule PhoenixBlog.PostController do
 
   use PhoenixBlog.Web, :controller
-  #use Rummage.Phoenix.Controller
+  use Rummage.Phoenix.Controller
 
   alias PhoenixBlog.Post
   alias PhoenixBlog.Comment
@@ -11,9 +11,11 @@ defmodule PhoenixBlog.PostController do
   plug :authorize_user when action in [:new, :create, :update, :edit, :delete]
   plug :authorize_draft when action in [:index]
 
-  def index(conn, _params) do
-    posts = Repo.all(assoc(conn.assigns[:user], :posts))
-    render(conn, "index.html", posts: posts)
+  def index(conn, params) do
+    {query, rummage} = assoc(conn.assigns[:user], :posts)
+    |> Post.rummage(params["rummage"])
+    posts = Repo.all(query)
+    render(conn, "index.html", posts: posts, rummage: rummage)
   end
 
   def new(conn, _params) do
