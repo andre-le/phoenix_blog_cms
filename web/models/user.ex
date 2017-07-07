@@ -11,6 +11,7 @@ defmodule PhoenixBlog.User do
     field :password_digest, :string
     field :uid, :string
     field :provider, :string
+    field :id_token, :string
 
     timestamps()
 
@@ -24,7 +25,7 @@ defmodule PhoenixBlog.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:username, :email, :password, :password_confirmation, :role_id, :uid, :provider])
+    |> cast(params, [:username, :email, :password, :password_confirmation, :role_id, :uid, :provider, :id_token])
     |> validate_required([:username, :email, :password, :password_confirmation, :role_id])
     |> hash_password
     |> get_provider
@@ -43,5 +44,10 @@ defmodule PhoenixBlog.User do
     else
       changeset
     end
+  end
+
+  def change_id_token(changeset, id) do
+    changeset
+    |> put_change(:id_token, id)
   end
 end

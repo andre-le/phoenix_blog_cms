@@ -16,6 +16,11 @@ defmodule PhoenixBlog.SessionController do
     sign_in(user, password, conn)
   end
 
+  #def create(conn, %{"user" => %{"email" => email, "password" => password}})
+  #when not is_nil(username) and not is_nil(password) do
+
+  #end
+
   def create(conn, _) do
     failed_login(conn)
   end

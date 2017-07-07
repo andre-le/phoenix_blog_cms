@@ -19,7 +19,7 @@ defmodule PhoenixBlog.Mixfile do
   def application do
     [mod: {PhoenixBlog, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :comeonin]]
+                    :phoenix_ecto, :postgrex, :comeonin, :httpotion]]
   end
 
   # Specifies which paths to compile per environment.
@@ -42,7 +42,8 @@ defmodule PhoenixBlog.Mixfile do
      {:rummage_ecto, "~> 1.0.0"},
      {:rummage_phoenix, "~> 1.0.0"},
      {:earmark, "~> 1.0.1"},
-     {:joken, "~> 1.1"}]
+     {:joken, "~> 1.1"},
+     {:httpotion, "~> 3.0.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

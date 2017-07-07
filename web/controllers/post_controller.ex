@@ -94,11 +94,13 @@ defmodule PhoenixBlog.PostController do
     |> redirect(to: user_post_path(conn, :index, conn.assigns[:user]))
   end
 
-  def nondraft(conn, _) do
+  def nondraft(conn, params) do
     query = from post in assoc(conn.assigns[:user], :posts),
     where: post.status != "Draft"
+    {query, rummage} = query
+    |> Post.rummage(params["rummage"])
     posts = Repo.all(query)
-    render(conn, "nondrafts.html", posts: posts)
+    render(conn, "nondrafts.html", posts: posts, rummage: rummage)
   end
 
   def all(conn, params) do
