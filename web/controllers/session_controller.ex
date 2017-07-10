@@ -10,27 +10,33 @@ defmodule PhoenixBlog.SessionController do
     render conn, "new.html", changeset: User.changeset(%User{})
   end
 
+  @doc """
   def create(conn, %{"user" => %{"username" => username, "password" => password}})
   when not is_nil(username) and not is_nil(password) do
     user = Repo.get_by(User, username: username)
     sign_in(user, password, conn)
   end
+  """
 
-  #def create(conn, %{"user" => %{"email" => email, "password" => password}})
-  #when not is_nil(username) and not is_nil(password) do
-
-  #end
+  def create(conn, %{"user" => %{"email" => email, "password" => password}})
+  when not is_nil(email) and not is_nil(password) do
+    user = Repo.get_by(User, email: email)
+    request = HTTPotion.post "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyDAWqDfXKZkM-hBphL5Y58cnPhOVI4c7dg",
+    [body: "{'email': '" <> email <> "', 'password': '" <> password <> "', 'returnSecureToken': true}",
+    headers: ["Content-Type": "application/json"]]
+    sign_in(request, user, conn)
+  end
 
   def create(conn, _) do
     failed_login(conn)
   end
 
-  defp sign_in(user, _password, conn) when is_nil(user) do
-    failed_login(conn)
+  defp sign_in(_request, user, conn) when is_nil(user) do
+   failed_login(conn)
   end
 
-  defp sign_in(user, password, conn) do
-    if checkpw(password, user.password_digest) do
+  defp sign_in(request, user, conn) do
+    if HTTPotion.Response.success?(request) do
       conn
       |> put_session(:current_user, %{id: user.id, username: user.username, role_id: user.role_id})
       |> put_flash(:info, "Sign in successful!")
@@ -48,7 +54,6 @@ defmodule PhoenixBlog.SessionController do
   end
 
   defp failed_login(conn) do
-    dummy_checkpw()
     conn
     |> put_session(:current_user, nil)
     |> put_flash(:error, "Invalid username/password combination!")
