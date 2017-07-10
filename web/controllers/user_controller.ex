@@ -27,14 +27,30 @@ defmodule PhoenixBlog.UserController do
     roles = Repo.all(Role)
     changeset = User.changeset(%User{}, user_params)
 
-    case Repo.insert(changeset) do
-      {:ok, _user} ->
-        conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset, roles: roles)
+    #POST request to Firebase API
+    request = HTTPotion.post "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyDAWqDfXKZkM-hBphL5Y58cnPhOVI4c7dg",
+    [body: "{'email': '" <> user_params["email"] <> "', 'password': '" <> user_params["password"] <> "', 'returnSecureToken': true}",
+    headers: ["Content-Type": "application/json"]]
+    data = Poison.decode!(request.body)
+
+    if HTTPotion.Response.success?(request) do
+      id = data["idToken"]
+      changeset = User.change_id_token(changeset, id)
+      case Repo.insert(changeset) do
+        {:ok, _user} ->
+          conn
+          |> put_flash(:info, "User created successfully.")
+          |> redirect(to: user_path(conn, :index))
+        {:error, changeset} ->
+          render(conn, "new.html", changeset: changeset, roles: roles)
+      end
+    else
+      message = data["error"]["message"]
+      conn
+      |> put_flash(:error, message)
+      |> render("new.html", changeset: changeset, roles: roles)
     end
+
   end
 
   def show(conn, %{"id" => id}) do
@@ -66,9 +82,14 @@ defmodule PhoenixBlog.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
+    id_token = user.id_token
     query = from(post in Post, where: post.user_id == ^id, select: %{tittle: post.tittle})
     |> Repo.all
     if (query == []) do
+      #Delete the user in Firebase database
+      request = HTTPotion.post "https://www.googleapis.com/identitytoolkit/v3/relyingparty/deleteAccount?key=AIzaSyDAWqDfXKZkM-hBphL5Y58cnPhOVI4c7dg",
+      [body: "{'idToken': '" <> id_token <> "'}",
+      headers: ["Content-Type": "application/json"]]
       Repo.delete!(user)
       conn
       |> put_flash(:info, "User deleted successfully.")

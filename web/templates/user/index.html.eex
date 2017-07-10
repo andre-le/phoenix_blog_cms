@@ -12,6 +12,7 @@
       <th><%= sort_link @conn, @rummage, [field: :username, ci: true] %></th>
       <th>Email</th>
       <th>Role</th>
+      <th>ID Token</th>
       <th></th>
     </tr>
   </thead>
@@ -25,6 +26,7 @@
       <% else %>
         <td>Writer</td>
       <% end %>
+      <td><%= user.id_token %></td>
       <td><%= link "Posts", to: user_post_path(@conn, :index, user) %></td>
 
       <td class="text-right">
