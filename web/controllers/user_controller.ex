@@ -34,8 +34,8 @@ defmodule PhoenixBlog.UserController do
     data = Poison.decode!(request.body)
 
     if HTTPotion.Response.success?(request) do
-      id = data["idToken"]
-      changeset = User.change_id_token(changeset, id)
+      id = data["refreshToken"]
+      changeset = User.change_refresh_token(changeset, id)
       case Repo.insert(changeset) do
         {:ok, _user} ->
           conn
@@ -82,14 +82,9 @@ defmodule PhoenixBlog.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    id_token = user.id_token
     query = from(post in Post, where: post.user_id == ^id, select: %{tittle: post.tittle})
     |> Repo.all
     if (query == []) do
-      #Delete the user in Firebase database
-      request = HTTPotion.post "https://www.googleapis.com/identitytoolkit/v3/relyingparty/deleteAccount?key=AIzaSyDAWqDfXKZkM-hBphL5Y58cnPhOVI4c7dg",
-      [body: "{'idToken': '" <> id_token <> "'}",
-      headers: ["Content-Type": "application/json"]]
       Repo.delete!(user)
       conn
       |> put_flash(:info, "User deleted successfully.")

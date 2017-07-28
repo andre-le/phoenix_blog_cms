@@ -3,11 +3,19 @@ defmodule PhoenixBlog.SessionController do
   alias PhoenixBlog.User
 
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
+  import JsonWebToken
 
   plug :scrub_params, "user" when action in [:create]
 
   def new(conn, _params) do
-    render conn, "new.html", changeset: User.changeset(%User{})
+    user = get_session(conn, :current_user)
+    if user == nil do
+      render conn, "new.html", changeset: User.changeset(%User{})
+    else
+      conn
+      |> put_flash(:info, "Sign in successful!")
+      |> redirect(to: page_path(conn, :index))
+    end
   end
 
   @doc """
@@ -24,23 +32,26 @@ defmodule PhoenixBlog.SessionController do
     request = HTTPotion.post "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyDAWqDfXKZkM-hBphL5Y58cnPhOVI4c7dg",
     [body: "{'email': '" <> email <> "', 'password': '" <> password <> "', 'returnSecureToken': true}",
     headers: ["Content-Type": "application/json"]]
-    sign_in(request, user, conn)
+    data = Poison.decode!(request.body)
+    token = data['idToken']
+    sign_in(request, user, token, conn)
   end
 
   def create(conn, _) do
     failed_login(conn)
   end
 
-  defp sign_in(_request, user, conn) when is_nil(user) do
+  defp sign_in(_request, user, _token, conn) when is_nil(user) do
    failed_login(conn)
   end
 
-  defp sign_in(request, user, conn) do
+  defp sign_in(request, user, token, conn) do
     if HTTPotion.Response.success?(request) do
       conn
       |> put_session(:current_user, %{id: user.id, username: user.username, role_id: user.role_id})
       |> put_flash(:info, "Sign in successful!")
       |> redirect(to: page_path(conn, :index))
+
     else
       failed_login(conn)
     end
@@ -59,6 +70,10 @@ defmodule PhoenixBlog.SessionController do
     |> put_flash(:error, "Invalid username/password combination!")
     |> redirect(to: page_path(conn, :index))
     |> halt()
+  end
+
+  defp verified_token(token) do
+    {:ok, claims} = JsonWebToken.verify(token, %{alg: "RS256", key: "d314873e2afe2927d767e7a77c517d547e9b74ce"})
   end
 
 end
