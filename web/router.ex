@@ -17,6 +17,7 @@ defmodule PhoenixBlog.Router do
     pipe_through :api
 
     get "/", PageController, :index
+    get "/verify", UserController, :verify
     resources "/users", UserController, only: [:index, :show] do
       resources "/posts", PostController, only: [:index, :show]
       get "/all", PostController, :all
@@ -31,8 +32,8 @@ defmodule PhoenixBlog.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    get "/all", PostController, :all
     resources "/users", UserController do
+      get "/setting", SettingController, :setting
       resources "/posts", PostController do
         post "/comment", PostController, :add_comment
         get "/page", PostController, :page
